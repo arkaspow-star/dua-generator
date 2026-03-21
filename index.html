@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DuaFlow — Invocations Authentiques du Coran & Sunnah</title>
+<meta name="description" content="Trouve la dua parfaite pour ta situation. 100% authentique, tirée du Coran et des hadiths sahih. En arabe, phonétique et français.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #0A6B42;
+    --green-light: #12885A;
+    --green-pale: #E8F5EE;
+    --green-mist: #F2FAF6;
+    --gold: #C4920A;
+    --gold-light: #F0C94A;
+    --cream: #FDFAF4;
+    --ink: #1A1A1A;
+    --ink-soft: #3D3D3D;
+    --ink-muted: #7A7A7A;
+    --border: #E2EDE8;
+    --shadow: rgba(10, 107, 66, 0.12);
+    --radius: 20px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Background Pattern ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      radial-gradient(circle at 20% 20%, rgba(10,107,66,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(196,146,10,0.05) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230A6B42' fill-opacity='0.025'%3E%3Cpath d='M30 0l5.878 18.09L54.27 11.73 44.27 27.81 60 30l-15.73 2.19 10 16.08-18.392-6.36L30 60l-5.878-18.09-18.392 6.36 10-16.08L0 30l15.73-2.19-10-16.08 18.392 6.36z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(253,250,244,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    font-family: 'Fraunces', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--gold); }
+
+  .nav-links {
+    display: flex;
+    gap: 24px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--green); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 80px 24px 60px;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green-pale);
+    border: 1px solid rgba(10,107,66,0.2);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--green);
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 20px;
+    animation: fadeUp 0.6s ease 0.1s both;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--green);
+  }
+
+  .hero p {
+    font-size: 1.05rem;
+    color: var(--ink-muted);
+    line-height: 1.7;
+    max-width: 520px;
+    margin: 0 auto 40px;
+    font-weight: 300;
+    animation: fadeUp 0.6s ease 0.2s both;
+  }
+
+  /* ── SEARCH BOX ── */
+  .search-container {
+    animation: fadeUp 0.6s ease 0.3s both;
+  }
+
+  .search-box {
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 6px 6px 6px 20px;
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    box-shadow: 0 4px 32px var(--shadow);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .search-box:focus-within {
+    border-color: var(--green);
+    box-shadow: 0 4px 40px rgba(10,107,66,0.18);
+  }
+
+  .search-box textarea {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: transparent;
+    resize: none;
+    min-height: 56px;
+    max-height: 140px;
+    line-height: 1.6;
+    padding: 10px 0;
+  }
+
+  .search-box textarea::placeholder {
+    color: var(--ink-muted);
+  }
+
+  .search-btn {
+    flex-shrink: 0;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s, transform 0.1s;
+    white-space: nowrap;
+    align-self: flex-end;
+    margin-bottom: 2px;
+  }
+
+  .search-btn:hover { background: var(--green-light); }
+  .search-btn:active { transform: scale(0.97); }
+  .search-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .search-btn .btn-icon { font-size: 1.1rem; }
+
+  /* ── EXAMPLE CHIPS ── */
+  .chips-label {
+    font-size: 0.78rem;
+    color: var(--ink-muted);
+    margin: 16px 0 10px;
+    text-align: center;
+    animation: fadeUp 0.6s ease 0.4s both;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    animation: fadeUp 0.6s ease 0.45s both;
+  }
+
+  .chip {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 7px 16px;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 400;
+  }
+
+  .chip:hover {
+    background: var(--green-pale);
+    border-color: rgba(10,107,66,0.3);
+    color: var(--green);
+  }
+
+  /* ── RESULT ── */
+  #result-section {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto 80px;
+    padding: 0 24px;
+  }
+
+  .result-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 8px 48px var(--shadow);
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .result-header {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 100%);
+    padding: 32px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-header::before {
+    content: '﷽';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 8rem;
+    color: rgba(255,255,255,0.04);
+    pointer-events: none;
+  }
+
+  .result-situation {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 20px;
+  }
+
+  /* ── Arabic text ── */
+  .arabic-block {
+    padding: 36px 36px 24px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .arabic-text {
+    font-family: 'Amiri', serif;
+    font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+    line-height: 1.9;
+    color: var(--ink);
+    direction: rtl;
+    unicode-bidi: bidi-override;
+    animation: arabicPulse 4s ease-in-out infinite;
+  }
+
+  @keyframes arabicPulse {
+    0%, 100% { text-shadow: 0 0 0 transparent; }
+    50% { text-shadow: 0 0 30px rgba(10,107,66,0.12); }
+  }
+
+  .copy-arabic {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    background: var(--green-pale);
+    border: none;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    color: var(--green);
+    cursor: pointer;
+    transition: background 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .copy-arabic:hover { background: #d4edde; }
+
+  /* ── Info blocks ── */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .info-block {
+    padding: 24px 28px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .info-block:nth-child(2n) { border-right: none; }
+  .info-block:nth-last-child(-n+2) { border-bottom: none; }
+
+  .info-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .info-label .label-icon { font-size: 0.9rem; }
+
+  .info-content {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    line-height: 1.65;
+  }
+
+  .phonetic { font-style: italic; color: var(--ink-muted); }
+  .source-ref { color: var(--gold); font-weight: 500; }
+
+  /* ── Action block ── */
+  .action-block {
+    background: var(--green-mist);
+    border-top: 1px solid var(--border);
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .action-icon {
+    width: 42px;
+    height: 42px;
+    background: var(--green);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .action-text {
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .action-text strong { color: var(--green); }
+
+  /* ── Share buttons ── */
+  .share-row {
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .share-label {
+    font-size: 0.8rem;
+    color: var(--ink-muted);
+    margin-right: 4px;
+  }
+
+  .share-btn {
+    background: var(--green-pale);
+    border: 1px solid rgba(10,107,66,0.2);
+    border-radius: 100px;
+    padding: 7px 16px;
+    font-size: 0.8rem;
+    color: var(--green);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .share-btn:hover { background: #d4edde; }
+
+  .new-search-btn {
+    margin-left: auto;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 100px;
+    padding: 8px 20px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+
+  .new-search-btn:hover { background: var(--green-light); }
+
+  /* ── LOADING ── */
+  .loading-state {
+    display: none;
+    text-align: center;
+    padding: 60px 24px;
+  }
+
+  .loading-state.visible { display: block; }
+
+  .tasbih {
+    display: inline-flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .tasbih-dot {
+    width: 10px;
+    height: 10px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: tasbihBounce 1.2s ease-in-out infinite;
+  }
+
+  .tasbih-dot:nth-child(2) { animation-delay: 0.15s; }
+  .tasbih-dot:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes tasbihBounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+
+  .loading-text {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+
+  /* ── DAILY REMINDER ── */
+  #reminder-section {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto 60px;
+    padding: 0 24px;
+  }
+
+  .reminder-card {
+    background: linear-gradient(135deg, #0A6B42 0%, #0D8050 100%);
+    border-radius: 24px;
+    padding: 32px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .reminder-card::after {
+    content: '';
+    position: absolute;
+    right: -20px;
+    top: -20px;
+    width: 180px;
+    height: 180px;
+    border: 2px solid rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+
+  .reminder-card::before {
+    content: '';
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    width: 120px;
+    height: 120px;
+    border: 2px solid rgba(255,255,255,0.06);
+    border-radius: 50%;
+  }
+
+  .reminder-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 12px;
+  }
+
+  .reminder-arabic {
+    font-family: 'Amiri', serif;
+    font-size: 1.5rem;
+    color: white;
+    direction: rtl;
+    margin-bottom: 12px;
+    line-height: 1.8;
+  }
+
+  .reminder-translation {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.6;
+    font-style: italic;
+    margin-bottom: 10px;
+  }
+
+  .reminder-source {
+    font-size: 0.78rem;
+    color: var(--gold-light);
+    font-weight: 500;
+  }
+
+  /* ── POPULAR EXAMPLES ── */
+  #examples-section {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto 80px;
+    padding: 0 24px;
+  }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .section-sub {
+    font-size: 0.85rem;
+    color: var(--ink-muted);
+    margin-bottom: 24px;
+  }
+
+  .examples-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .example-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .example-card:hover {
+    border-color: rgba(10,107,66,0.3);
+    box-shadow: 0 4px 20px var(--shadow);
+    transform: translateY(-2px);
+  }
+
+  .example-icon {
+    width: 38px;
+    height: 38px;
+    background: var(--green-pale);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .example-label {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 32px 24px;
+    text-align: center;
+  }
+
+  .footer-name {
+    font-family: 'Fraunces', serif;
+    font-size: 1.2rem;
+    color: var(--green);
+    margin-bottom: 8px;
+  }
+
+  .footer-text {
+    font-size: 0.8rem;
+    color: var(--ink-muted);
+    line-height: 1.7;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .footer-disclaimer {
+    margin-top: 16px;
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+    opacity: 0.7;
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--ink);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+    pointer-events: none;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── ERROR ── */
+  .error-state {
+    display: none;
+    background: #FFF5F5;
+    border: 1px solid #FFD5D5;
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .error-state.visible { display: block; }
+  .error-state p { font-size: 0.9rem; color: #C0392B; }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .info-grid { grid-template-columns: 1fr; }
+    .info-block { border-right: none; }
+    .info-block:nth-last-child(-n+2) { border-bottom: 1px solid var(--border); }
+    .info-block:last-child { border-bottom: none; }
+    .result-header { padding: 24px 20px; }
+    .arabic-block { padding: 28px 20px 20px; }
+    nav { padding: 0 16px; }
+    .nav-links { display: none; }
+    .share-row { flex-direction: column; align-items: flex-start; }
+    .new-search-btn { margin-left: 0; }
+    .reminder-card { padding: 24px 24px; }
+    .hero { padding: 60px 16px 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">Dua<span>Flow</span> 🌿</a>
+  <ul class="nav-links">
+    <li><a href="#examples-section">Exemples</a></li>
+    <li><a href="#reminder-section">Rappel du jour</a></li>
+    <li><a href="#" onclick="showAbout()">À propos</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    🕌 100% Coran & Hadiths authentiques
+  </div>
+  <h1>La dua <em>parfaite</em><br>pour ta situation</h1>
+  <p>Décris ce que tu vis en quelques mots. Tu reçois une invocation tirée du Coran ou des hadiths sahih, avec la phonétique et la signification.</p>
+
+  <div class="search-container">
+    <div class="search-box">
+      <textarea 
+        id="userInput" 
+        placeholder="Ex : J'ai un examen demain et j'ai peur de rater… / Je me sens seul et déprimé / J'ai besoin de baraka dans mon travail…"
+        rows="2"
+        onInput="autoResize(this)"
+        onKeyDown="handleEnter(event)"
+      ></textarea>
+      <button class="search-btn" id="searchBtn" onclick="getDua()">
+        <span class="btn-icon">🤲</span>
+        Trouver ma dua
+      </button>
+    </div>
+  </div>
+
+  <p class="chips-label">Situations fréquentes — clique pour essayer :</p>
+  <div class="chips">
+    <div class="chip" onclick="fillAndSearch('J\'ai un examen demain et je suis stressé')">📚 Examen</div>
+    <div class="chip" onclick="fillAndSearch('Je me sens anxieux et stressé')">😰 Anxiété</div>
+    <div class="chip" onclick="fillAndSearch('Je suis triste et déprimé')">💙 Tristesse</div>
+    <div class="chip" onclick="fillAndSearch('J\'ai des problèmes d\'argent')">💸 Finances</div>
+    <div class="chip" onclick="fillAndSearch('J\'ai du mal à dormir')">🌙 Insomnie</div>
+    <div class="chip" onclick="fillAndSearch('J\'ai un entretien d\'embauche')">💼 Entretien</div>
+    <div class="chip" onclick="fillAndSearch('Je suis malade et j\'ai besoin de guérison')">🤒 Maladie</div>
+    <div class="chip" onclick="fillAndSearch('Je suis en colère')">🔥 Colère</div>
+    <div class="chip" onclick="fillAndSearch('Je cherche un mariage pieux')">💍 Mariage</div>
+    <div class="chip" onclick="fillAndSearch('Dua pour mes parents')">❤️ Parents</div>
+  </div>
+</section>
+
+<!-- LOADING -->
+<div id="loadingState" class="loading-state" style="display:none;">
+  <div class="tasbih">
+    <div class="tasbih-dot"></div>
+    <div class="tasbih-dot"></div>
+    <div class="tasbih-dot"></div>
+  </div>
+  <p class="loading-text">Recherche dans le Coran & la Sunnah…</p>
+</div>
+
+<!-- ERROR -->
+<div id="errorState" class="error-state" style="margin: 0 24px 20px;">
+  <p id="errorMsg">Une erreur s'est produite. Veuillez réessayer.</p>
+</div>
+
+<!-- RESULT -->
+<section id="result-section" style="display:none;">
+  <div class="result-card" id="resultCard">
+    <!-- injected by JS -->
+  </div>
+</section>
+
+<!-- DAILY REMINDER -->
+<section id="reminder-section">
+  <div style="max-width:760px; margin:0 auto; padding:0 24px 16px;">
+    <div class="section-title">✨ Rappel du jour</div>
+    <div class="section-sub">Une invocation authentique chaque jour — pour nourrir ton cœur</div>
+  </div>
+  <div style="max-width:760px; margin:0 auto; padding:0 24px;">
+    <div class="reminder-card" id="reminderCard">
+      <!-- injected by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- EXAMPLES -->
+<section id="examples-section" style="margin-top:60px;">
+  <div style="max-width:760px; margin:0 auto; padding:0 24px 16px;">
+    <div class="section-title">🌿 Situations fréquentes</div>
+    <div class="section-sub">Clique sur une situation pour recevoir sa dua authentique</div>
+  </div>
+  <div style="max-width:760px; margin:0 auto; padding:0 24px;">
+    <div class="examples-grid">
+      <div class="example-card" onclick="fillAndSearch('Je me sens anxieux et stressé')"><div class="example-icon">😰</div><div class="example-label">Stress & Anxiété</div></div>
+      <div class="example-card" onclick="fillAndSearch('J\'ai un examen important demain')"><div class="example-icon">📚</div><div class="example-label">Examen & Études</div></div>
+      <div class="example-card" onclick="fillAndSearch('Je me sens triste et déprimé')"><div class="example-icon">💙</div><div class="example-label">Tristesse & Déprime</div></div>
+      <div class="example-card" onclick="fillAndSearch('Je suis très en colère')"><div class="example-icon">🔥</div><div class="example-label">Colère</div></div>
+      <div class="example-card" onclick="fillAndSearch('J\'ai des problèmes financiers et de dettes')"><div class="example-icon">💸</div><div class="example-label">Problèmes d'argent</div></div>
+      <div class="example-card" onclick="fillAndSearch('Je cherche un mariage pieux et béni')"><div class="example-icon">💍</div><div class="example-label">Mariage</div></div>
+      <div class="example-card" onclick="fillAndSearch('Je suis malade et j\'ai besoin de guérison')"><div class="example-icon">🤒</div><div class="example-label">Maladie & Guérison</div></div>
+      <div class="example-card" onclick="fillAndSearch('J\'ai du mal à dormir, insomnie')"><div class="example-icon">🌙</div><div class="example-label">Insomnie</div></div>
+      <div class="example-card" onclick="fillAndSearch('J\'ai peur de l\'avenir et de ce qui va arriver')"><div class="example-icon">🌅</div><div class="example-label">Peur de l'avenir</div></div>
+      <div class="example-card" onclick="fillAndSearch('Dispute et tension avec mes parents')"><div class="example-icon">🏠</div><div class="example-label">Dispute avec parents</div></div>
+      <div class="example-card" onclick="fillAndSearch('Je me sens très seul')"><div class="example-icon">🌿</div><div class="example-label">Solitude</div></div>
+      <div class="example-card" onclick="fillAndSearch('Je viens de vivre une rupture sentimentale')"><div class="example-icon">💔</div><div class="example-label">Après une rupture</div></div>
+      <div class="example-card" onclick="fillAndSearch('J\'ai un entretien d\'embauche important')"><div class="example-icon">💼</div><div class="example-label">Entretien d'embauche</div></div>
+      <div class="example-card" onclick="fillAndSearch('Je veux de la baraka dans mon travail')"><div class="example-icon">⭐</div><div class="example-label">Baraka au travail</div></div>
+      <div class="example-card" onclick="fillAndSearch('Dua pour la santé et le bonheur de mes parents')"><div class="example-icon">❤️</div><div class="example-label">Pour les parents</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-name">DuaFlow 🌿</div>
+  <p class="footer-text">
+    Toutes les duas présentées sont tirées uniquement du Coran et de hadiths authentiques (Sahih Bukhari, Sahih Muslim, Sunan Abu Dawood, etc.). Les sources sont vérifiées et citées précisément.
+  </p>
+  <p class="footer-disclaimer">
+    Ce site est un outil d'aide et ne remplace pas les avis d'un savant qualifié. Allahou a'lam.
+  </p>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Daily reminders (static, rotated by day) ──
+const DAILY_REMINDERS = [
+  {
+    arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+    phonetic: "Rab-ba-nâ âti-nâ fid-dou-nyâ ha-sa-na-tan wa fil-âkhi-ra-ti ha-sa-na-tan wa qi-nâ 'a-dhâ-ban-nâr",
+    translation: "Notre Seigneur, accorde-nous le bien ici-bas et le bien dans l'Au-delà, et préserve-nous du châtiment du Feu.",
+    source: "Coran 2:201"
+  },
+  {
+    arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ",
+    phonetic: "Al-lâ-houm-ma in-ni as-'alouka l-'âfi-ya-ta fid-dou-nyâ wal-âkhi-ra",
+    translation: "Ô Allah, je Te demande la santé et la protection dans cette vie et dans l'Au-delà.",
+    source: "Sunan Ibn Majah 3871 — Sahih"
+  },
+  {
+    arabic: "اللَّهُمَّ اغْفِرْ لِي وَارْحَمْنِي وَاهْدِنِي وَعَافِنِي وَارْزُقْنِي",
+    phonetic: "Al-lâ-houm-ma gh-fir-lî war-ham-nî wah-di-nî wa 'â-fi-nî war-zou-q-nî",
+    translation: "Ô Allah, pardonne-moi, fais-moi miséricorde, guide-moi, préserve-moi et pourvois à mon entretien.",
+    source: "Sahih Muslim 2697"
+  },
+  {
+    arabic: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ سُبْحَانَ اللَّهِ الْعَظِيمِ",
+    phonetic: "Soub-hâ-nal-lâhi wa bi-ham-di-hi, soub-hâ-nal-lâ-hil-'a-dhîm",
+    translation: "Gloire et louange à Allah, Gloire à Allah le Sublime.",
+    source: "Sahih Bukhari 6682 — Les deux phrases les plus aimées d'Allah"
+  },
+  {
+    arabic: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ خَلَقْتَنِي وَأَنَا عَبْدُكَ",
+    phonetic: "Al-lâ-houm-ma an-ta rab-bî lâ ilâ-ha il-lâ an-ta kha-laq-ta-nî wa a-nâ 'ab-dou-ka",
+    translation: "Ô Allah, Tu es mon Seigneur, il n'y a pas de divinité sauf Toi, Tu m'as créé et je suis Ton serviteur.",
+    source: "Sahih Bukhari 6306 — Sayyid al-Istighfar (maître de la demande de pardon)"
+  },
+  {
+    arabic: "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
+    phonetic: "Has-bou-nal-lâh wa ni'mal-wa-kîl",
+    translation: "Allah nous suffit et Il est le meilleur Garant.",
+    source: "Coran 3:173"
+  },
+  {
+    arabic: "لَا إِلَهَ إِلَّا أَنتَ سُبْحَانَكَ إِنِّي كُنتُ مِنَ الظَّالِمِينَ",
+    phonetic: "Lâ ilâ-ha il-lâ an-ta soub-hâ-na-ka in-nî koun-tou mi-nadh-dhâ-li-mîn",
+    translation: "Il n'y a pas de divinité sauf Toi, Gloire à Toi, j'ai certes fait partie des injustes.",
+    source: "Coran 21:87 — Dua de Yunus (Jonas) ﷺ dans le ventre du poisson"
+  }
+];
+
+// Show today's reminder
+function showDailyReminder() {
+  const dayIndex = new Date().getDay();
+  const r = DAILY_REMINDERS[dayIndex];
+  document.getElementById('reminderCard').innerHTML = `
+    <div class="reminder-label">🌙 Rappel du ${new Date().toLocaleDateString('fr-FR', {weekday:'long'})}</div>
+    <div class="reminder-arabic">${r.arabic}</div>
+    <div class="reminder-translation">« ${r.translation} »</div>
+    <div class="reminder-source">📚 ${r.source}</div>
+  `;
+}
+
+// ── Utility functions ──
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+}
+
+function handleEnter(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    getDua();
+  }
+}
+
+function fillAndSearch(text) {
+  document.getElementById('userInput').value = text;
+  autoResize(document.getElementById('userInput'));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(getDua, 400);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function copyArabic(text) {
+  navigator.clipboard.writeText(text).then(() => showToast('✅ Dua copiée !'));
+}
+
+function shareWhatsApp(situation, arabic, translation) {
+  const msg = `🕌 *DuaFlow — Dua authentique*\n\nPour : ${situation}\n\n${arabic}\n\n« ${translation} »\n\nTrouve ta dua sur DuaFlow.app`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`);
+}
+
+function newSearch() {
+  document.getElementById('result-section').style.display = 'none';
+  document.getElementById('errorState').style.display = 'none';
+  document.getElementById('userInput').value = '';
+  document.getElementById('userInput').style.height = 'auto';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(() => document.getElementById('userInput').focus(), 500);
+}
+
+// ── MAIN: Get Dua via Claude API ──
+async function getDua() {
+  const input = document.getElementById('userInput').value.trim();
+  if (!input) {
+    showToast('✍️ Décris d\'abord ta situation');
+    return;
+  }
+
+  const btn = document.getElementById('searchBtn');
+  btn.disabled = true;
+
+  document.getElementById('result-section').style.display = 'none';
+  document.getElementById('errorState').style.display = 'none';
+  document.getElementById('loadingState').style.display = 'block';
+  window.scrollTo({ top: document.getElementById('loadingState').offsetTop - 100, behavior: 'smooth' });
+
+  const systemPrompt = `Tu es un expert en invocations islamiques authentiques. Ton rôle est de fournir des duas tirées UNIQUEMENT du Coran ou de hadiths dont l'authenticité est établie (Sahih Bukhari, Sahih Muslim, Sunan Abu Dawood, Sunan Tirmidhi, Sunan Ibn Majah, Sunan Nasai).
+
+RÈGLE ABSOLUE : Tu n'inventes JAMAIS une dua ou une source. Si tu as le moindre doute sur une source, tu utilises une dua générale connue et tu écris "Allahou a'lam" pour la source spécifique. Vaut mieux une dua générale authentique qu'une dua inventée.
+
+Pour toute situation, réponds UNIQUEMENT avec un objet JSON valide (sans backticks, sans texte avant ou après), structuré exactement ainsi :
+{
+  "arabic": "النص العربي الأصلي",
+  "phonetic": "transcription phonétique simple pour francophones (avec tirets entre syllabes)",
+  "translation": "traduction française fluide et naturelle",
+  "source": "référence complète (ex: Sahih Bukhari 6307 ou Coran 2:286)",
+  "explanation": "explication en 2 phrases max, langage accessible aux jeunes",
+  "action": "conseil pratique concret (ex: Répète 3x après la prière de Sobh)",
+  "situation_label": "label court de la situation (ex: Stress et anxiété)"
+}
+
+Adapte la dua à la situation décrite. Priorité aux duas du Prophète ﷺ rapportées dans les sahih. Si la situation est très spécifique et qu'il n'existe pas de dua précise, utilise une dua générale connue et mentionne-le dans l'explication.`;
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: "user", content: `Situation : ${input}` }]
+      })
+    });
+
+    if (!response.ok) throw new Error(`API error: ${response.status}`);
+
+    const data = await response.json();
+    const rawText = data.content?.find(b => b.type === 'text')?.text || '';
+
+    let dua;
+    try {
+      // Clean potential markdown fences
+      const clean = rawText.replace(/```json|```/g, '').trim();
+      dua = JSON.parse(clean);
+    } catch {
+      throw new Error('Format de réponse invalide');
+    }
+
+    displayResult(dua, input);
+
+  } catch (err) {
+    console.error(err);
+    document.getElementById('errorMsg').textContent = 
+      err.message.includes('401') ? '🔑 Clé API manquante — ajoute ta clé Anthropic dans le code (ANTHROPIC_API_KEY).' :
+      err.message.includes('429') ? '⏳ Trop de requêtes, attends quelques secondes.' :
+      '❌ Une erreur s\'est produite. Vérifie ta connexion et réessaye.';
+    document.getElementById('errorState').style.display = 'block';
+    document.getElementById('loadingState').style.display = 'none';
+    window.scrollTo({ top: document.getElementById('errorState').offsetTop - 100, behavior: 'smooth' });
+  } finally {
+    btn.disabled = false;
+    document.getElementById('loadingState').style.display = 'none';
+  }
+}
+
+function displayResult(dua, userInput) {
+  const arabicText = dua.arabic || '';
+  const card = document.getElementById('resultCard');
+
+  card.innerHTML = `
+    <div class="result-header">
+      <div class="result-situation">🌿 ${dua.situation_label || 'Dua personnalisée'}</div>
+      <div style="font-family:'Amiri',serif; font-size:1.4rem; color:rgba(255,255,255,0.7); direction:rtl;">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+    </div>
+
+    <div class="arabic-block">
+      <button class="copy-arabic" onclick="copyArabic(\`${arabicText.replace(/`/g,'\\`')}\`)">📋 Copier</button>
+      <div class="arabic-text">${arabicText}</div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="info-label"><span class="label-icon">🔤</span> Phonétique</div>
+        <div class="info-content phonetic">${dua.phonetic || ''}</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label"><span class="label-icon">🇫🇷</span> Traduction</div>
+        <div class="info-content">« ${dua.translation || ''} »</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label"><span class="label-icon">📚</span> Source</div>
+        <div class="info-content source-ref">${dua.source || ''}</div>
+      </div>
+      <div class="info-block">
+        <div class="info-label"><span class="label-icon">🧠</span> Pourquoi cette dua ?</div>
+        <div class="info-content">${dua.explanation || ''}</div>
+      </div>
+    </div>
+
+    <div class="action-block">
+      <div class="action-icon">✅</div>
+      <div class="action-text"><strong>Comment la pratiquer :</strong> ${dua.action || ''}</div>
+    </div>
+
+    <div class="share-row">
+      <span class="share-label">Partager :</span>
+      <button class="share-btn" onclick="shareWhatsApp(\`${(dua.situation_label||userInput).replace(/`/g,'\\`')}\`, \`${arabicText.replace(/`/g,'\\`')}\`, \`${(dua.translation||'').replace(/`/g,'\\`')}\`)">
+        📱 WhatsApp
+      </button>
+      <button class="share-btn" onclick="copyArabic(\`${arabicText.replace(/`/g,'\\`')}\`)">
+        📋 Copier la dua
+      </button>
+      <button class="new-search-btn" onclick="newSearch()">
+        ↩ Nouvelle recherche
+      </button>
+    </div>
+  `;
+
+  document.getElementById('result-section').style.display = 'block';
+  setTimeout(() => {
+    window.scrollTo({ 
+      top: document.getElementById('result-section').offsetTop - 20, 
+      behavior: 'smooth' 
+    });
+  }, 100);
+}
+
+// Init
+showDailyReminder();
+</script>
+</body>
+</html>
