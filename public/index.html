@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bot Local — Exécution directe</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #0b0f14; color: #e8edf2; }
+    .card { background: #141b22; border: 1px solid #243444; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+    textarea { width: 100%; min-height: 70px; border-radius: 10px; border: 1px solid #2c3f52; background: #0f151c; color: #e8edf2; padding: 10px; }
+    button { background: #2f81f7; color: white; border: 0; border-radius: 10px; padding: 10px 14px; cursor: pointer; margin-top: 10px; }
+    pre { background: #0f151c; border: 1px solid #223243; border-radius: 10px; padding: 10px; overflow-x: auto; white-space: pre-wrap; }
+    .muted { color: #99a6b3; font-size: 14px; }
+    .chat { display: flex; flex-direction: column; gap: 8px; }
+    .bubble { padding: 10px 12px; border-radius: 10px; max-width: 85%; }
+    .user { align-self: flex-end; background: #2f81f7; }
+    .assistant { align-self: flex-start; background: #1d2a36; }
+  </style>
+</head>
+<body>
+  <h1>Bot local ultra sophistiqué (MVP)</h1>
+  <p class="muted">Écris une commande autorisée. Le backend l'exécute sur la machine locale avec garde-fous.</p>
+
+  <div class="card">
+    <div class="chat" id="chat"></div>
+    <textarea id="prompt" placeholder="Ex: git status"></textarea>
+    <button id="run">Envoyer</button>
+    <p class="muted">Allowlist: pwd, ls, echo, node -v, npm -v, python --version, git status</p>
+  </div>
+
+  <script>
+    const chat = document.getElementById('chat');
+    const promptEl = document.getElementById('prompt');
+    const runBtn = document.getElementById('run');
+
+    function addBubble(text, role = 'assistant') {
+      const d = document.createElement('div');
+      d.className = `bubble ${role}`;
+      d.textContent = text;
+      chat.appendChild(d);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    async function sendCommand() {
+      const command = promptEl.value.trim();
+      if (!command) return;
+
+      addBubble(command, 'user');
+      promptEl.value = '';
+      runBtn.disabled = true;
+
+      try {
+        const r = await fetch('/api/execute', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ command })
+        });
+        const data = await r.json();
+
+        if (!r.ok) {
+          addBubble(`Erreur: ${data.error}\nAutorisé: ${(data.allowed || []).join(', ')}`);
+        } else {
+          const output = [
+            `Commande: ${data.command}`,
+            `Exit: ${data.exitCode}`,
+            data.stdout ? `STDOUT:\n${data.stdout}` : '',
+            data.stderr ? `STDERR:\n${data.stderr}` : ''
+          ].filter(Boolean).join('\n\n');
+          addBubble(output);
+        }
+      } catch (e) {
+        addBubble(`Erreur réseau: ${e.message}`);
+      } finally {
+        runBtn.disabled = false;
+      }
+    }
+
+    runBtn.addEventListener('click', sendCommand);
+    promptEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) sendCommand();
+    });
+
+    addBubble('Salut. Je peux exécuter des commandes locales sécurisées via une allowlist.');
+  </script>
+</body>
+</html>
