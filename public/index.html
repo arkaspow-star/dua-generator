@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secure Local Agent</title>
+  <style>
+    body{font-family:Inter,Arial,sans-serif;background:#0b1220;color:#e6edf7;max-width:980px;margin:0 auto;padding:24px}
+    .card{background:#121b2b;border:1px solid #2b3f5f;border-radius:14px;padding:16px;margin-bottom:14px}
+    textarea{width:100%;min-height:74px;background:#0d1625;color:#e6edf7;border:1px solid #2d4466;border-radius:10px;padding:10px}
+    button{margin-top:10px;background:#2f81f7;color:#fff;border:0;border-radius:10px;padding:10px 14px;cursor:pointer}
+    .chat{display:flex;flex-direction:column;gap:8px;max-height:55vh;overflow:auto}
+    .bubble{padding:10px 12px;border-radius:10px;white-space:pre-wrap;line-height:1.45}
+    .u{align-self:flex-end;background:#2f81f7;max-width:84%}
+    .a{align-self:flex-start;background:#1a2740;max-width:90%}
+    .muted{opacity:.75;font-size:14px}
+  </style>
+</head>
+<body>
+  <h1>Agent local autonome sécurisé</h1>
+  <p class="muted">Tu écris en langage naturel. L’agent planifie puis exécute seulement des tools autorisés.</p>
+
+  <div class="card">
+    <div id="chat" class="chat"></div>
+    <textarea id="prompt" placeholder="Ex: montre le statut git du projet"></textarea>
+    <button id="send">Exécuter</button>
+    <p class="muted">Tools autorisés: pwd, ls, node version, python version, git status</p>
+  </div>
+
+<script>
+const chat = document.getElementById('chat');
+const promptEl = document.getElementById('prompt');
+const sendBtn = document.getElementById('send');
+
+function bubble(text, cls){const d=document.createElement('div');d.className=`bubble ${cls}`;d.textContent=text;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
+
+async function run(){
+  const prompt = promptEl.value.trim();
+  if(!prompt) return;
+  bubble(prompt,'u');
+  promptEl.value='';
+  sendBtn.disabled=true;
+  try{
+    const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
+    const data=await res.json();
+    const response = [
+      `OBJECTIF:\n- ${data.objective || 'N/A'}`,
+      `PLAN:\n${(data.plan||[]).map((p,i)=>`${i+1}. ${p}`).join('\n')}`,
+      `TOOL:\n- ${data.tool ? `${data.tool.key} => ${data.tool.cmd} ${data.tool.args.join(' ')}` : 'Aucun tool compatible'}`,
+      `EXECUTION:\n- exitCode: ${data.result?.exitCode ?? 'N/A'}`,
+      `VERIFICATION:\n- stdout: ${data.result?.stdout || '(vide)'}\n- stderr: ${data.result?.stderr || '(vide)'}`,
+      `NEXT ACTION:\n- ${data.result?.exitCode === 0 ? 'Prêt pour la prochaine action.' : 'Réécris la demande avec un tool autorisé.'}`
+    ].join('\n\n');
+    bubble(response,'a');
+  }catch(err){
+    bubble(`Erreur: ${err.message}`,'a');
+  }finally{sendBtn.disabled=false;}
+}
+
+sendBtn.addEventListener('click',run);
+promptEl.addEventListener('keydown',(e)=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter')run();});
+bubble('Agent prêt. Donne une action locale sécurisée.','a');
+</script>
+</body>
+</html>
